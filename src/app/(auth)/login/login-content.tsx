@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") ?? "/admin/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,8 +14,9 @@ export default function LoginContent() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setError("");
+
     setLoading(true);
+    setError("");
 
     const result = await signIn("credentials", {
       email,
@@ -28,53 +27,46 @@ export default function LoginContent() {
     setLoading(false);
 
     if (result?.error) {
-      setError(
-  result.error === "FORBIDDEN"
-    ? "ليس لديك صلاحية الوصول"
-    : "البريد الإلكتروني أو كلمة المرور غير صحيحة"
-);س
+      setError("Invalid email or password");
     } else {
-      router.push(callbackUrl);
+      router.push("/admin/dashboard");
     }
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-md p-8">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          EBDA3 � ????? ??????
-        </h1>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 rounded-xl shadow w-80 space-y-4"
+      >
+        <h1 className="text-xl font-bold text-center">EBDA3 Login</h1>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            placeholder="admin@ebda3.ae"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-          />
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full border p-2 rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            placeholder="��������"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-          />
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full border p-2 rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white rounded-lg py-2"
-          >
-            {loading ? "???? ??????..." : "????? ??????"}
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white p-2 rounded"
+        >
+          {loading ? "Loading..." : "Login"}
+        </button>
+      </form>
     </div>
   );
 }
