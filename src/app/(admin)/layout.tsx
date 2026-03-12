@@ -1,11 +1,11 @@
 import Link from "next/link";
 
 const navItems = [
-  { href: "/admin/dashboard", label: "لوحة التحكم" },
-  { href: "/admin/orders",    label: "الطلبيات"     },
-  { href: "/admin/customers", label: "العملاء"      },
-  { href: "/admin/agents",    label: "المندوبين"    },
-  { href: "/admin/products",  label: "المنتجات"     },
+  { href: "/dashboard", label: "لوحة التحكم" },
+  { href: "/orders",    label: "الطلبيات"     },
+  { href: "/customers", label: "العملاء"      },
+  { href: "/agents",    label: "المندوبين"    },
+  { href: "/products",  label: "المنتجات"     },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
