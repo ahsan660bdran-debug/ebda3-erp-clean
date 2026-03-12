@@ -22,7 +22,7 @@ export default async function DashboardPage() {
     prisma.order.count({ where: { status: "UNINSTALLED" } }),
     prisma.order.findMany({
       take: 10,
-      orderBy: { createdAt: "desc" },
+router.push("/dashboard");
       select: {
         id:          true,
         orderNumber: true,

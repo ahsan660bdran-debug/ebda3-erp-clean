@@ -5,59 +5,66 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function LoginContent() {
-
   const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
     const result = await signIn("credentials", {
       email,
       password,
-      redirect: false
+      redirect: false,
     });
 
-    if (!result?.error) {
-      router.push("/admin/dashboard");
+    setLoading(false);
+
+    if (result?.error) {
+      setError("Invalid email or password");
     } else {
-      alert("Login failed");
+      router.push("/dashboard");
     }
   }
 
   return (
-    <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}>
-
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <form
         onSubmit={handleSubmit}
-        style={{display:"flex",flexDirection:"column",gap:"10px",width:"300px"}}
+        className="bg-white p-8 rounded-xl shadow w-80 space-y-4"
       >
-
-        <h2>EBDA3 Login</h2>
+        <h1 className="text-xl font-bold text-center">EBDA3 Login</h1>
 
         <input
           type="email"
           placeholder="Email"
+          className="w-full border p-2 rounded"
           value={email}
-          onChange={(e)=>setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <input
           type="password"
           placeholder="Password"
+          className="w-full border p-2 rounded"
           value={password}
-          onChange={(e)=>setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit">
-          Login
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white p-2 rounded"
+        >
+          {loading ? "Loading..." : "Login"}
         </button>
-
       </form>
-
     </div>
   );
 }
